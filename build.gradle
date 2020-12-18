@@ -11,11 +11,6 @@ sourceSets {
             srcDirs = ['resources']
         }
     }
-    test {
-        groovy {
-            srcDirs = ['test']
-        }
-    }
 }
 
 repositories {
@@ -38,32 +33,4 @@ dependencies {
     testCompile group: 'com.lesfurets', name: 'jenkins-pipeline-unit', version: '1.7'
     testCompile group: 'org.jenkins-ci.plugins.workflow', name: 'workflow-job', version: '2.40'
     testCompile group: 'junit', name: 'junit', version: '4.13'
-}
-
-test {
-    dependsOn cleanTest
-
-    //Dejar en true para ignorar posible fallo en la ejecución.
-    ignoreFailures = false
-
-    testLogging.maxGranularity = 0
-
-    //Habilitar solo para depurar con mensajes println dentro del método y mostrarlos durante gradlew test.
-    onOutput { dest, event -> print event.message }
-
-    def results = []
-    afterTest { desc, result ->
-        println "${desc.className.split("\\.")[-1]}: " +
-            "${desc.name}: ${result.resultType}"
-    }
-    afterSuite { desc, result ->
-        if (desc.className) { results << result }
-    }
-
-    doLast {
-        println "Tests: ${results.sum { it.testCount }}" +
-            ", Fallidos: ${results.sum { it.failedTestCount }}" +
-            ", Errores: ${results.sum { it.exceptions.size() }}" + 
-            ", Omitidos: ${results.sum { it.skippedTestCount }}" 
-    }
 }
